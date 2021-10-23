@@ -1,0 +1,33 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: ${JENKINS_ADMIN_ID}
+         password: ${JENKINS_ADMIN_PASSWORD}
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+
+  remotingSecurity:
+    enabled: true
+
+tool:
+  git:
+    installations:
+      - name: git
+        home: /user/local/bin/git
+
+security:
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: triggeringUsersAuthorizationStrategy
+
+unclassified:
+  location:
+    # Migrate IP to URL. Will be jenkins.brewdict.io but for the mo looking to move to jenkins.brewdict.maxbarker.uk.
+    url: http://46.101.53.212:8080/
+    adminAddress: max@the-barkers.com
