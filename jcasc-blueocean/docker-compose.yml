@@ -1,4 +1,4 @@
-version: '1.2'
+version: '3.8'
 
 networks:
   jenkins-network:
@@ -42,3 +42,6 @@ services:
       - DOCKER_HOST=tcp://docker:2376
       - DOCKER_CERT_PATH=/certs/client
       - DOCKER_TLS_VERIFY=1
+	# TODO  Need to migrate these details to secrets.
+      - JENKINS_ADMIN_ID=admin
+      - JENKINS_ADMIN_PASSWORD=password
