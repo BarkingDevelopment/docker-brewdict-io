@@ -87,6 +87,7 @@ FROM $image
 USER root
 EOF
 
+#Migrate the build.sh and run.sh files to docker-compose file.
 cat <<-EOF > "$name"/build.sh
 #!/bin/bash
 #
