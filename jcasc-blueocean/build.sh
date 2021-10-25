@@ -2,4 +2,4 @@
 #
 # Builds the jcasc-blueocean image.
 
-docker build -t jcasc-blueocean:1.0 .
+docker build -t jcasc-blueocean:1.1 .

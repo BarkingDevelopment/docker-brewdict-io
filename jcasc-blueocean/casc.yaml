@@ -1,4 +1,17 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - x509ClientCert:
+          clientCertificate: ${readFile:${DOCKER_CERT_PATH}/cert.pem}
+          clientKeySecret: ${readFile:${DOCKER_CERT_PATH}/key.pem}
+          id: "comp3000-docker-dind"
+          scope: GLOBAL
+          serverCaCertificate: ${readFile:${DOCKER_CERT_PATH}/ca.pem}
+
 jenkins:
+  systemMessage: "This is a work in progress CasC file for COMP3000 Jenkins server."
+  
   securityRealm:
     local:
       allowsSignup: false
@@ -10,6 +23,24 @@ jenkins:
       permissions:
         - "Overall/Administer:admin"
         - "Overall/Read:authenticated"
+        
+  numExecutors: 0
+  slaveAgentPort: 50000
+  clouds:
+  - docker:
+      dockerApi:
+        dockerHost:
+          credentialsId: "comp3000-docker-dind"
+          uri: "tcp://docker:2376"
+      name: "docker"
+      templates:
+      - connector: "attach"
+        disabled:
+          enabledByChoice: true
+        dockerTemplateBase:
+          image: "jenkins/agent:latest"
+        labelString: "jenkins-agent"
+        name: "jenkins-cloud-agent-01"
 
   remotingSecurity:
     enabled: true
@@ -28,6 +59,7 @@ security:
 
 unclassified:
   location:
-    # Migrate IP to URL. Will be jenkins.brewdict.io but for the mo looking to move to jenkins.brewdict.maxbarker.uk.
-    url: http://46.101.53.212:8080/
-    adminAddress: max@the-barkers.com
+    # TODO Migrate to jenkins.brewdict.io.
+    adminAddress: "max.barker@students.plymouth.ac.uk"
+    url: "http://brewdict.maxbarker.uk:8080/"
+
