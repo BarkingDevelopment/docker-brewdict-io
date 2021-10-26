@@ -2,4 +2,4 @@
 #
 # Builds the jcasc-blueocean image.
 
-docker build -t jcasc-blueocean:1.1 .
+docker build -t mlbarker/jenkins:casc .

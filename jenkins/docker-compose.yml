@@ -27,14 +27,15 @@ services:
       - DOCKER_TLS_CERTDIR=/certs
     
   jenkins:
-    container_name: jenkins-blueocean
-    image: jcasc-blueocean:1.1
+    container_name: jenkins-controller
+    image: mlbarker/jenkins:casc
     restart: unless-stopped
     networks:
-      - jenkins-network
+      jenkins-network:
+        aliases:
+          - jenkins
     ports:
       - 8080:8080
-      - 50000:50000
     volumes:
       - data:/var/jenkins_home
       - certs:/certs/client:ro
@@ -42,6 +43,8 @@ services:
       - DOCKER_HOST=tcp://docker:2376
       - DOCKER_CERT_PATH=/certs/client
       - DOCKER_TLS_VERIFY=1
-	# TODO  Need to migrate these details to secrets.
+      
+      # TODO  Need to migrate these details to secrets.
       - JENKINS_ADMIN_ID=admin
       - JENKINS_ADMIN_PASSWORD=password
+

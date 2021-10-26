@@ -25,23 +25,31 @@ jenkins:
         - "Overall/Read:authenticated"
         
   numExecutors: 0
-  slaveAgentPort: 50000
   clouds:
   - docker:
+      containerCap: 1
       dockerApi:
+        connectTimeout: 60
         dockerHost:
           credentialsId: "comp3000-docker-dind"
           uri: "tcp://docker:2376"
+        readTimeout: 60
       name: "docker"
       templates:
-      - connector: "attach"
-        disabled:
-          enabledByChoice: true
+      - connector:
+          ssh:
+            sshKeyStrategy:
+              injectSSHKey:
+                user: "jenkins"
         dockerTemplateBase:
-          image: "jenkins/agent:latest"
-        labelString: "jenkins-agent"
-        name: "jenkins-cloud-agent-01"
-
+          cpuPeriod: 0
+          cpuQuota: 0
+          image: "jenkins/ssh-agent"
+        labelString: "cloud-agent"
+        pullTimeout: 300
+        remoteFs: "/home/jenkins"
+        removeVolumes: true
+ 
   remotingSecurity:
     enabled: true
 
