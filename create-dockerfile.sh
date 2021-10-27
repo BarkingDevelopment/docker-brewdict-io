@@ -87,13 +87,12 @@ FROM $image
 USER root
 EOF
 
-#Migrate the build.sh and run.sh files to docker-compose file.
 cat <<-EOF > "$name"/build.sh
 #!/bin/bash
 #
 # Builds the $name image.
 
-docker build -t $name:1.0
+docker build -t mlbarker/$name:1.0
 EOF
 
 cat <<-EOF > "$name"/run.sh
@@ -101,7 +100,12 @@ cat <<-EOF > "$name"/run.sh
 #
 # Runs the $name image in a Docker container.
 
-docker run $name:1.0
+docker run mlbarker/$name:1.0
 EOF
 
+cat <<-EOF > "$name"/docker-compose.yml
+version: "3.8"
+
+services:
+EOF
 exit
