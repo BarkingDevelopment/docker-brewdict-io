@@ -1,0 +1,73 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - x509ClientCert:
+          clientCertificate: ${readFile:${DOCKER_CERT_PATH}/cert.pem}
+          clientKeySecret: ${readFile:${DOCKER_CERT_PATH}/key.pem}
+          id: "comp3000-docker-dind"
+          scope: GLOBAL
+          serverCaCertificate: ${readFile:${DOCKER_CERT_PATH}/ca.pem}
+
+jenkins:
+  systemMessage: "This is a work in progress CasC file for COMP3000 Jenkins server."
+  
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: ${JENKINS_ADMIN_ID}
+         password: ${JENKINS_ADMIN_PASSWORD}
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+        
+  numExecutors: 0
+  clouds:
+  - docker:
+      containerCap: 1
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          credentialsId: "comp3000-docker-dind"
+          uri: "tcp://docker:2376"
+        readTimeout: 60
+      name: "docker"
+      templates:
+      - connector:
+          ssh:
+            sshKeyStrategy:
+              injectSSHKey:
+                user: "jenkins"
+        dockerTemplateBase:
+          cpuPeriod: 0
+          cpuQuota: 0
+          image: "jenkins/ssh-agent"
+        labelString: "cloud-agent"
+        pullTimeout: 300
+        remoteFs: "/home/jenkins"
+        removeVolumes: true
+ 
+  remotingSecurity:
+    enabled: true
+
+tool:
+  git:
+    installations:
+      - name: git
+        home: /user/local/bin/git
+
+security:
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: triggeringUsersAuthorizationStrategy
+
+unclassified:
+  location:
+    # TODO Migrate to jenkins.brewdict.io.
+    adminAddress: "max.barker@students.plymouth.ac.uk"
+    url: "http://brewdict.maxbarker.uk:8080/"
+
