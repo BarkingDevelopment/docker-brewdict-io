@@ -82,25 +82,32 @@ parse_params "$@"
 
 # Main script logic.
 mkdir "$name"
-cat <<-EOF > "$name"/Dockerfile
+cd "$name"
+
+cat <<-EOF > Dockerfile
 FROM $image
 USER root
 EOF
 
-cat <<-EOF > "$name"/build.sh
+# Migrate to docker-compose.yaml
+cat <<-EOF > build.sh
 #!/bin/bash
 #
 # Builds the $name image.
 
-docker build -t $name:1.0
+docker build -t $name:1.0 .
 EOF
 
-cat <<-EOF > "$name"/run.sh
+chmod 775 build.sh
+
+cat <<-EOF > run.sh
 #!/bin/bash
 #
 # Runs the $name image in a Docker container.
 
-docker run $name:1.0
+docker run -rm $name:1.0
 EOF
+
+chmod 775 run.sh
 
 exit
