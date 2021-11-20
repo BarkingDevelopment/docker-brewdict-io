@@ -9,8 +9,16 @@ credentials:
           scope: GLOBAL
           serverCaCertificate: ${readFile:${DOCKER_CERT_PATH}/ca.pem}
 
+       - usernamePassword:
+          description: "Login details for docker image repo"
+          id: "docker.com"
+          password: "{AQAAABAAAAAgkeVe+363fC/x5+35PALguz7FNGdi/NXMgT83W1qublTqCd5ThvkWw+ywZcmPSeVb}"
+          scope: GLOBAL
+          username: "mlbarker"
+          usernameSecret: true
+
 jenkins:
-  systemMessage: "This is a work in progress CasC file for COMP3000 Jenkins server."
+  systemMessage: "Welcome to the Jenkins image used to for DevOps of COMP3000 final year project!"
   
   securityRealm:
     local:
@@ -34,7 +42,7 @@ jenkins:
           credentialsId: "comp3000-docker-dind"
           uri: "tcp://docker:2376"
         readTimeout: 60
-      name: "docker"
+      name: "comp3000-dind"
       templates:
       - connector:
           ssh:
@@ -44,12 +52,27 @@ jenkins:
         dockerTemplateBase:
           cpuPeriod: 0
           cpuQuota: 0
-          image: "jenkins/ssh-agent"
+          image: "mlbarker/ssh-agent"
         labelString: "cloud-agent"
+        name: "dind-agent"
+        nodeProperties:
+        - toolLocation:
+            locations:
+            - home: "/usr/lib/git-core/git"
+              key: "hudson.plugins.git.GitTool$DescriptorImpl@git"
         pullTimeout: 300
         remoteFs: "/home/jenkins"
         removeVolumes: true
- 
+
+   - docker:
+      containerCap: 0
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          uri: "unix:///var/run/docker.sock"
+        readTimeout: 60
+      name: "comp3000-host"
+
   remotingSecurity:
     enabled: true
 
@@ -57,7 +80,7 @@ tool:
   git:
     installations:
       - name: git
-        home: /user/local/bin/git
+        home: /usr/lib/git-core/git
 
 security:
   queueItemAuthenticator:
