@@ -95,7 +95,8 @@ cat <<-EOF > build.sh
 #
 # Builds the $name image.
 
-docker build -t mlbarker/$name:1.0
+docker build -t mlbarker/$name:1.0 -t mlbarker/$name:latest .
+
 EOF
 
 chmod 775 build.sh
@@ -108,9 +109,12 @@ cat <<-EOF > run.sh
 docker run mlbarker/$name:1.0
 EOF
 
-cat <<-EOF > "$name"/docker-compose.yml
+chmod 775 run.sh
+
+cat <<-EOF > docker-compose.yml
 version: "3.8"
 
 services:
 EOF
+
 exit
