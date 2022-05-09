@@ -1,0 +1,29 @@
+version: "3.8"
+
+networks:
+  brewdict-network:
+    name: brewdict
+
+volumes:
+  portainer-data:
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    networks:
+      brewdict-network:
+        aliases:
+          - portainer
+    ports:
+      - 9443:9443
+#      - 8001:8000
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+#    environment:
+#      - VIRTUAL_HOST:portainer.brewdict.io
+#      - VIRTUAL_PORT:9443
+#      - HTTPS_PORT:9443
+    command: -H unix:///var/run/docker.sock
